@@ -1,9 +1,14 @@
 import fs from "fs";
 
 class ProductManager {
-  constructor(pathFile) {
-    this.pathFile = pathFile;
+  constructor() {
+    this.pathFile = "./data/fs/files/products.json";
     this.products = [];
+    this.init();
+  }
+
+  init() {
+    this.loadProducts();
   }
 
   async loadProducts() {
@@ -25,12 +30,12 @@ class ProductManager {
     }
   }
 
-  async addProduct(title, description, price, thumbnail, code, stock = 0) {
+  async addProduct(title, description, price, thumbnail, code, stock) {
     const newProduct = {
       id: this.products.length + 1,
       title,
       description,
-      price: parseFloat(price),
+      price,
       thumbnail,
       code,
       stock,
@@ -50,18 +55,17 @@ class ProductManager {
 
     this.products.push(newProduct);
     await this.saveProducts();
+    console.log(`Product ${title} was created with success.`);
+    return newProduct;
   }
 
   async getProducts() {
-    await this.loadProducts();
     console.log(this.products);
     return this.products;
   }
 
   async getProductById(id) {
-    await this.loadProducts();
-
-    const product = this.products.find((product) => product.id === id);
+    const product = this.products.find((product) => product.id === parseInt(id));
 
     if (!product) {
       console.log(`Product with ID ${id} not found.`);
@@ -73,8 +77,6 @@ class ProductManager {
   }
 
   async updateProduct(id, dataProduct) {  
-    await this.loadProducts();
-
     const index = this.products.findIndex((product) => product.id === id);
 
     if (index === -1) {
@@ -92,8 +94,6 @@ class ProductManager {
   }
 
   async deleteProduct(id) {
-    await this.loadProducts();
-
     const index = this.products.findIndex((product) => product.id === id);
 
     if (index === -1) {
@@ -108,24 +108,27 @@ class ProductManager {
 }
 
 
-const productManager = new ProductManager("./files/products.json");
+const productManager = new ProductManager();
 
 export default productManager;
 
 // TESTING PROCESS:
-// (async () => {
-//   // await productManager.addProduct("Nike Pegasus 40 SE", "Men's running shoes", "129.99", "https://example.com/image.jpg");
-//   // await productManager.addProduct("Nike Quest 5", "Men's running shoes", "76.99", "https://example.com/image.jpg", "NQ5", 15);
-//   // await productManager.addProduct("Nike Quest 5", "Men's running shoes", "76.99", "https://example.com/image.jpg", "NQ5", 15);
-//   // await productManager.addProduct("Jordan Stay Loyal 2", "Men's Jordan shoes", "116.99", "https://example.com/image.jpg", "JSL2", 10);
-//   // await productManager.addProduct("Nike Quest 6", "Men's running shoes", "96.99", "https://example.com/image.jpg", "NQ6", 18);
-//   // await productManager.addProduct("Nike Quest 11", "Men's running shoes", "96.99", "https://example.com/image.jpg", "NQ11", 25);
+async function test() {
+  try {
+    const productManager = new ProductManager("./files/products.json");
+    await productManager.addProduct("Nike Pegasus 40 SE", "Men's running shoes", "129.99", "https://example.com/image.jpg");
+    await productManager.addProduct("Nike Quest 5", "Men's running shoes", "76.99", "https://example.com/image.jpg", "NQ5", 15);
+    await productManager.addProduct("Nike Quest 5", "Men's running shoes", "76.99", "https://example.com/image.jpg", "NQ5", 15);
+    await productManager.addProduct("Jordan Stay Loyal 2", "Men's Jordan shoes", "116.99", "https://example.com/image.jpg", "JSL2", 10);
+    await productManager.addProduct("Nike Quest 6", "Men's running shoes", "96.99", "https://example.com/image.jpg", "NQ6", 18);
+    await productManager.addProduct("Nike Quest 11", "Men's running shoes", "96.99", "https://example.com/image.jpg", "NQ11", 25);
+    await productManager.getProducts();
+    await productManager.getProductById(3);
+    await productManager.updateProduct(3, { title: "Nike Quest 10" });
+    await productManager.deleteProduct(2);
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-//   // await productManager.getProducts();
-
-//   // await productManager.getProductById(5);
-
-//   // await productManager.updateProduct(5, { title: "Nike Quest 10" });
-
-//   // await productManager.deleteProduct(5);
-// })();
+// test();

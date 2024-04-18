@@ -1,11 +1,38 @@
 [
   {
     "id": 1,
-    "title": "Nike Quest 6",
+    "title": "Nike Quest 5",
+    "description": "Men's running shoes",
+    "price": 76.99,
+    "thumbnail": "https://example.com/image.jpg",
+    "code": "NQ5",
+    "stock": 15
+  },
+  {
+    "id": 2,
+    "title": "Nike Quest 10",
     "description": "Men's running shoes",
     "price": 96.99,
     "thumbnail": "https://example.com/image.jpg",
     "code": "NQ6",
     "stock": 18
+  },
+  {
+    "id": 3,
+    "title": "Nike Quest 11",
+    "description": "Men's running shoes",
+    "price": 96.99,
+    "thumbnail": "https://example.com/image.jpg",
+    "code": "NQ11",
+    "stock": 25
+  },
+  {
+    "id": 4,
+    "title": "Nike Pegasus 40 SE",
+    "description": "Men's running shoes",
+    "price": "129.99",
+    "thumbnail": "https://example.com/image.jpg",
+    "code": "NP40SE",
+    "stock": "22"
   }
 ]
