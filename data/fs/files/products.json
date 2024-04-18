@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "title": "Nike Quest 6",
+    "description": "Men's running shoes",
+    "price": 96.99,
+    "thumbnail": "https://example.com/image.jpg",
+    "code": "NQ6",
+    "stock": 18
+  }
+]

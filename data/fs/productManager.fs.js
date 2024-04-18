@@ -1,15 +1,11 @@
 import fs from "fs";
-import crypto from "crypto";
 
 class ProductManager {
-  // Set the path to the JSON products file and initialize an empty array for the products.
-  constructor() {
-    this.pathFile = "./data/fs/files/products.json";
+  constructor(pathFile) {
+    this.pathFile = pathFile;
     this.products = [];
   }
 
-  // LOAD PRODUCTS
-  // Asynchronously loads the products from the JSON file into the products array.
   async loadProducts() {
     try {
       const productJson = await fs.promises.readFile(this.pathFile, "utf-8");
@@ -21,8 +17,6 @@ class ProductManager {
     }
   }
 
-  // SAVE PRODUCTS
-  // Asynchronously saves the current state of the products back to the JSON file.
   async saveProducts() {
     try {
       await fs.promises.writeFile(this.pathFile, JSON.stringify(this.products));
@@ -31,52 +25,39 @@ class ProductManager {
     }
   }
 
-  // ADD PRODUCTS
-  // Adds a new product to the products array and saves it to the file. Checks for required fields and if a product with the same code already exists.
   async addProduct(title, description, price, thumbnail, code, stock = 0) {
-    try {
-      const newProduct = {
-        id: this.products.length + 1,
-        title,
-        description,
-        price: parseFloat(price),
-        thumbnail,
-        code,
-        stock,
-      };
+    const newProduct = {
+      id: this.products.length + 1,
+      title,
+      description,
+      price: parseFloat(price),
+      thumbnail,
+      code,
+      stock,
+    };
 
-      if (Object.values(newProduct).includes(undefined)) {
-        throw new Error("All fields are required.");
-      }
-
-      const productExists = this.products.find((product) => product.code === code);
-
-      if (productExists) {
-        throw new Error(`Product ${title} with code ${code} already exists.`);
-      }
-
-      let all = await fs.promises.readFile(this.pathFile, "utf-8");
-      all = JSON.parse(all);
-      console.log(all)
-      // all.push(newProduct);
-      // all = JSON.stringify(all);
-      // await fs.promises.writeFile(this.pathFile, all);
-      // return newProduct;
-    } catch (error) {
-      throw error;
+    if (Object.values(newProduct).includes(undefined)) {
+      console.log("All fields are required.");
+      return;
     }
+
+    const productExists = this.products.find((product) => product.code === code);
+
+    if (productExists) {
+      console.log(`Product ${title} with code ${code} already exists.`);
+      return;
+    }
+
+    this.products.push(newProduct);
+    await this.saveProducts();
   }
 
-  // GET PRODUCTS
-  // Gets all the products from the products array after loading them from the file.
   async getProducts() {
     await this.loadProducts();
     console.log(this.products);
     return this.products;
   }
 
-  // GET PRODUCT BY ID
-  // Gets a product by its ID from the products array after loading them from the file.
   async getProductById(id) {
     await this.loadProducts();
 
@@ -91,8 +72,6 @@ class ProductManager {
     return product;
   }
 
-  // UPDATE PRODUCT BY ID
-  // Updates an existing product with new data, identified by its ID. Saves the changes to the file.
   async updateProduct(id, dataProduct) {  
     await this.loadProducts();
 
@@ -112,7 +91,6 @@ class ProductManager {
     console.log(`Product with ID ${id} updated successfully.`);
   }
 
-  // DELETE PRODUCT BY ID
   async deleteProduct(id) {
     await this.loadProducts();
 
@@ -129,5 +107,25 @@ class ProductManager {
   }
 }
 
-const productManager = new ProductManager();
+
+const productManager = new ProductManager("./files/products.json");
+
 export default productManager;
+
+// TESTING PROCESS:
+// (async () => {
+//   // await productManager.addProduct("Nike Pegasus 40 SE", "Men's running shoes", "129.99", "https://example.com/image.jpg");
+//   // await productManager.addProduct("Nike Quest 5", "Men's running shoes", "76.99", "https://example.com/image.jpg", "NQ5", 15);
+//   // await productManager.addProduct("Nike Quest 5", "Men's running shoes", "76.99", "https://example.com/image.jpg", "NQ5", 15);
+//   // await productManager.addProduct("Jordan Stay Loyal 2", "Men's Jordan shoes", "116.99", "https://example.com/image.jpg", "JSL2", 10);
+//   // await productManager.addProduct("Nike Quest 6", "Men's running shoes", "96.99", "https://example.com/image.jpg", "NQ6", 18);
+//   // await productManager.addProduct("Nike Quest 11", "Men's running shoes", "96.99", "https://example.com/image.jpg", "NQ11", 25);
+
+//   // await productManager.getProducts();
+
+//   // await productManager.getProductById(5);
+
+//   // await productManager.updateProduct(5, { title: "Nike Quest 10" });
+
+//   // await productManager.deleteProduct(5);
+// })();
