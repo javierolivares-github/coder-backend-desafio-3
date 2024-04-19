@@ -1,12 +1,12 @@
 [
   {
     "id": 1,
-    "title": "Nike Quest 5",
+    "title": "Nike Jordan",
     "description": "Men's running shoes",
-    "price": 76.99,
+    "price": 96.99,
     "thumbnail": "https://example.com/image.jpg",
-    "code": "NQ5",
-    "stock": 15
+    "code": "JJJ",
+    "stock": 18
   },
   {
     "id": 2,
@@ -34,5 +34,14 @@
     "thumbnail": "https://example.com/image.jpg",
     "code": "NP40SE",
     "stock": "22"
+  },
+  {
+    "id": 5,
+    "title": "Nike Quest 20",
+    "description": "Men's running shoes",
+    "price": 116.99,
+    "thumbnail": "https://example.com/image.jpg",
+    "code": "NQ1ASD1",
+    "stock": 30
   }
 ]

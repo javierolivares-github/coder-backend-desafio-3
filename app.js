@@ -18,11 +18,11 @@ app.use(express.urlencoded({extended:true})); // To use the info that comes from
 
 // Browser events:
 app.get("/", index);
-// app.post("/products", create);
-app.get("/products", read);
-// app.get("/products/:pid", readOne);
-// app.put("/products/:pid", update);
-// app.delete("/products/:pid", destroy);
+app.post("/products", create); 
+app.get("/products", read); 
+app.get("/products/:pid", readOne); 
+app.put("/products/:pid", update); 
+app.delete("/products/:pid", destroy); 
 
 // To configure the callbacks:
 async function index(req, res) {
@@ -36,20 +36,22 @@ async function index(req, res) {
 }
 
 async function create(req,res) {
-  // Logic to create a product:
   try {
     const { title, description, price, thumbnail, code, stock } = req.body;
     const newProduct = await productManager.addProduct(title, description, price, thumbnail, code, stock);
     return res.json({ status: 201, response: newProduct });
+
   } catch (error) {
     console.log(error);
     return res.json({ status: error.status || 500, response: error.message || "ERROR" });
+    
   }
 }
 
 async function read(req,res) {
   try {
-    const all = await productManager.getProducts();
+    const { limit } = req.query;
+    const all = await productManager.getProducts(limit);
     if (all.length > 0) {
       return res.json({ status: 200, response: all });
     } else {
@@ -63,32 +65,35 @@ async function read(req,res) {
 
 async function readOne(req,res) {
   try {
-    const { nid } = req.params;
-    const one = await productManager.readOne(nid);
+    const { pid } = req.params;
+    const one = await productManager.getProductById(pid);
     if (one) {
       return res.json({ status: 200, response: one });
+
     } else {
       const error = new Error("Not found!");
       error.status = 404;
       throw error;
+
     }
+
   } catch (error) {
     console.log(error);
     return res.json({ status: error.status || 500, response: error.message || "ERROR" });
+
   }
 }
 
 async function update(req,res) {
   try {
-    // Capture param
-    const { nid } = req.params;
-    // Capture object with modification
+    // Capture params
+    const { pid } = req.params;
+    // Capture body
     const data = req.body;
-    // Update the resource
-    const one = await productManager.update(nid, data);
-    // Condicionar y enviar la respuesta al cliente
+    // Update
+    const one = await productManager.updateProduct(pid, data);
+    // Response
     if (one) {
-      // Send the response to the client
       return res.json({ status: 200, response: one });
     } else {
       const error = new Error("Not found!");
@@ -103,19 +108,20 @@ async function update(req,res) {
 
 async function destroy(req,res) {
   try {
-    // Capturar el id
-    const { nid } = req.params;
-    // buscar el recurso
-    const one = await productManager.readOne(nid);
-    // si existe lo elimino
+    // Capture params
+    const { pid } = req.params;
+    // Search
+    const one = productManager.getProductById(pid);
+    // Destroy
     if (one) {
-      await notesManager.destroy(nid);
+      await productManager.deleteProduct(pid);
       return res.json({status: 200, response: one});
     }
+    // Error
     const error = new Error("Not found!");
     error.status = 404;
     throw error;
-    // condicionar y enviar respuesta al cliente
+    
   } catch (error) {
     console.log(error);
     return res.json({ status: error.status || 500, response: error.message || "ERROR" });
